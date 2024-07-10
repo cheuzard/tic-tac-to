@@ -162,8 +162,6 @@ void empty(){
 
 int main(int argc, char const *argv[])
 {
-    //win int variable to state if the games has a winner
-    int win = 0;
     
     //initializing the game board with empty spaces
     //the game board represented as a 2D array of integers, where 0 represents an empty space,
@@ -175,27 +173,18 @@ int main(int argc, char const *argv[])
 int round = 0;
 
     //the main game loop
-while (!win)
+while (1)
 {
-    //asking the player for the coordinates the want to place there symbol in
-        printf("it's player %d's turn", round%2 + 1);
-        //using a do while loop to check that the cell is empty
-        //player is determined by checking if the round is odd or even
-        //the + 1 is to go from 0 or 1 to 1 or 2 
-        do
-        {
-        printf(" select an empty space:");
-        scanf("%d %d",&y,&x);
-        } while (table[y - 1][x -1] != 0);
-
-        //registering the move to the game board
-        table[y - 1][x - 1] = round%2 + 1;
+    
         
+        //prints numbers to help identify the cell's coordinates 
+        printf("\n\n11111111111111 2222222222222 3333333333333\n");
     
     //rendering the game board
     //looping three times, once for every row using the y coords
     for (int y = 0; y < 3; y++)
     {
+
         //printing a horizontal line for every row, to avoid doubling the asterisks lines only the upper line is printed
         //and the last asterisks line is printed last in the loop
             Line();
@@ -217,16 +206,30 @@ while (!win)
                     circle(i);
                 }
             }
-            //print the final vertical wall (|) and break line 
-            printf("|\n");
+            //print the final vertical wall (|) and break line plus the y coordinates to help identify cells
+            printf("|%d\n", y+1);
         }
     }
     //prints the final horizontal line after every cell is rendered 
     Line();
 
-    //update the game win state for the next loop
-    win = checkWin(table);
+    //checking if there is a winner after each turn, if there is, the game loop breaks
+    if (checkWin(table) == 1) {break;}
 
+    //asking the player for the coordinates the want to place there symbol in
+        printf("it's player %d's turn", round%2 + 1);
+        //using a do while loop to check that the cell is empty
+        //player is determined by checking if the round is odd or even
+        //the + 1 is to go from 0 or 1 to 1 or 2 
+        do
+        {
+        printf(" select an empty space:");
+        scanf("%d %d",&x,&y);
+        } while (table[y - 1][x -1] != 0);
+
+        //registering the move to the game board
+        table[y - 1][x - 1] = round%2 + 1;
+        
     //increment the turn counter after each turn
     round++;
 }
