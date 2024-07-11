@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 //function to print a horizontal line of asterisks
 void Line(){
@@ -76,10 +77,9 @@ void empty(){
 }
 
 //function that checks if there is a winner
-//uses the "win" int variable to return 1 if there is a winner and 0 otherwise 
+//uses the "win" int variable to return 1; if there is a winner and 0 otherwise 
     int checkWin(int table[3][3]){
-        int win = 0;
-
+        
         //check the rows
         for (int i = 0; i < 3; i++)
         {
@@ -88,11 +88,11 @@ void empty(){
                 {
                 case 1:
                     printf("player 1 wins !!\n");
-                    win = 1;
+                    return 1;
                     break;
                 case 2:
                     printf("player 2 wins !!\n");
-                    win = 1;
+                    return 1;
                     break;
                 default:
                     break;
@@ -109,11 +109,11 @@ void empty(){
                 {
                 case 1:
                     printf("player 1 wins !!\n");
-                    win = 1;
+                    return 1;
                     break;
                 case 2:
                     printf("player 2 wins !!\n");
-                    win = 1;
+                    return 1;
                     break;
                 default:
                     break;
@@ -128,11 +128,11 @@ void empty(){
             {
             case 1:
                 printf("player 1 wins !!\n");
-                win = 1;
+                return 1;
                 break;
             case 2:
                 printf("player 2 wins !!\n");
-                win = 1;
+                return 1;
                 break;
             default:
                 break;
@@ -145,23 +145,37 @@ void empty(){
             {
             case 1:
                 printf("player 1 wins !!\n");
-                win = 1;
+                return 1;
                 break;
             case 2:
                 printf("player 2 wins !!\n");
-                win = 1;
+                return 1;
                 break;
             default:
                 break;
             }
         }
-        
+
+        //check if there is a draw by verifying that there still is empty space
+        bool found = false;
+        for (int i = 0; i < 3 && !found; i++)
+        {
+            for (int j = 0; j < 3 && !found; j++)
+            {
+                if (table[i][j] == 0){
+                    //return 0 if there is still space
+                    return 0;
+                }
+            }
             
-     return win;   
+        }    
+        //return 2 only if there is a draw
+     return 2;   
     }
 
 int main(int argc, char const *argv[])
 {
+    int win =0;
     
     //initializing the game board with empty spaces
     //the game board represented as a 2D array of integers, where 0 represents an empty space,
@@ -214,8 +228,28 @@ while (1)
     Line();
 
     //checking if there is a winner after each turn, if there is, the game loop breaks
-    if (checkWin(table) == 1) {break;}
+    //win returns 0 if there is now winner, 1 if there is a winner and 2 if it's a draw
+    win = checkWin(table);
+    if (win == 1){
+        break;
+    }
+    if (win == 2)//empty all the cells if there is a draw
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                table[i][j] = 0;
+            }
+            
+        }
+        printf("its a draw, play again !!!\n");
+        //ser round to -1 to bring it to 0 after the incrementation ++
+        round = -1;
+    }
 
+        //if win = 2 draw we skip adding a new symbol to show the empty board
+    if (win != 2){
     //asking the player for the coordinates the want to place there symbol in
         printf("it's player %d's turn", round%2 + 1);
         //using a do while loop to check that the cell is empty
@@ -223,12 +257,13 @@ while (1)
         //the + 1 is to go from 0 or 1 to 1 or 2 
         do
         {
-        printf(" select an empty space:");
+        printf("\nselect an empty space:");
         scanf("%d %d",&x,&y);
-        } while (table[y - 1][x -1] != 0);
+        } while (table[y - 1][x -1] != 0 && x>0 && y>0 && x<4 && y<4);
 
         //registering the move to the game board
         table[y - 1][x - 1] = round%2 + 1;
+    }
         
     //increment the turn counter after each turn
     round++;
@@ -236,4 +271,3 @@ while (1)
 
     return 0;
 }
-
